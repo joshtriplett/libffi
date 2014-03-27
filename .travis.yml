@@ -9,14 +9,20 @@ matrix:
   exclude:
     - compiler: clang
       env: HOST=i386-pc-linux-gnu
+  include:
+    - compiler: gcc
+      env: HOST=i686-w64-mingw32 wine=wine
+    - compiler: gcc
+      env: HOST=x86_64-w64-mingw32 wine=wine64
 
 before_script:
+  - sudo apt-get update
   - sudo apt-get install dejagnu texinfo
   - if [ "$HOST" = i386-pc-linux-gnu ] ; then sudo apt-get install gcc-multilib g++-multilib && CC="$CC -m32" && CXX="$CXX -m32" ; fi
+  - if [ "${HOST##*-}" = mingw32 ] ; then sudo apt-get --no-install-recommends install mingw-w64 g++-mingw-w64 wine && CC="${HOST}-gcc" && CXX="${HOST}-g++" ; fi
+  - if [ "$HOST" = x86_64-w64-mingw32 ] ; then sudo sed -i '/interpreter/s/.*/interpreter \/usr\/bin\/wine64/' /usr/share/binfmts/wine && sudo update-binfmts --import ; fi
+  - if [ "${HOST##*-}" = mingw32 ] ; then grep '"PATH"' /usr/share/wine/wine.inf && sudo sed -i '/"PATH"/s/"PATH"[^"]*"/&Z:'"$(pwd | sed 's/\//\\\\/g')\\\\$HOST\\\\.libs"';Z:'"$($CC -print-file-name=libstdc++.dll.a | xargs dirname | sed 's/\//\\\\/g')"';/' /usr/share/wine/wine.inf && grep '"PATH"' /usr/share/wine/wine.inf ; fi
 
 script:
-  - ./autogen.sh
-  - ./configure ${HOST+--host=$HOST}
-  - make
-  - make dist
-  - make check
+  - if [ "${HOST##*-}" = mingw32 ] ; then : $wine cmd < /dev/null && : wineserver -k ; : wineserver -p && : $wine cmd < /dev/null ; fi && ./autogen.sh && ./configure ${HOST+--host=$HOST} && make && make dist && make check
+  - ! grep -H -C50 '^FAIL' */testsuite/libffi.log

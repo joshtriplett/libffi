@@ -4,8 +4,8 @@
    PR:			none.
    Originator:	Blake Chaffin 6/6/2007	 */
 
-/* { dg-do run { xfail strongarm*-*-* xscale*-*-* } } */
-/* { dg-output "" { xfail avr32*-*-* x86_64-*-mingw* } } */
+/* { dg-do run { xfail *-*-mingw* *-*-cygwin* strongarm*-*-* xscale*-*-* } } */
+/* { dg-output "" { xfail avr32*-*-* *-*-mingw* *-*-cygwin* } } */
 /* { dg-output "" { xfail mips-sgi-irix6* } } PR libffi/46660 */
 
 #include "ffitest.h"

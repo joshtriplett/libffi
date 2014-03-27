@@ -35,12 +35,12 @@ int main (void)
   CHECK(ffi_prep_closure_loc(pcl, &cif, cls_ret_ulonglong_fn, NULL, code)  == FFI_OK);
   res = (*((cls_ret_ulonglong)code))(214LL);
   /* { dg-output "214: 1152921504606846761" } */
-  printf("res: %" PRIdLL "\n", res);
+  printf("res: %" PRIuLL "\n", res);
   /* { dg-output "\nres: 1152921504606846761" } */
 
   res = (*((cls_ret_ulonglong)code))(9223372035854775808LL);
   /* { dg-output "\n9223372035854775808: 8070450533247928831" } */
-  printf("res: %" PRIdLL "\n", res);
+  printf("res: %" PRIuLL "\n", res);
   /* { dg-output "\nres: 8070450533247928831" } */
 
   exit(0);

@@ -63,7 +63,7 @@
 #endif
 
 /* MinGW kludge.  */
-#ifdef _WIN64
+#ifdef _WIN32
 #define PRIdLL "I64d"
 #define PRIuLL "I64u"
 #else
@@ -122,7 +122,7 @@
 #endif
 
 /* MSVC kludge.  */
-#if defined _MSC_VER
+#if defined _WIN32
 #define PRIuPTR "lu"
 #define PRIu8 "u"
 #define PRId8 "d"
